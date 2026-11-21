@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f4ecdc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161a17" media="(prefers-color-scheme: dark)">
+  <title>Pick of the Litter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Colorado Puppy Rescue · <span id="dogcount"></span></p>
+      <h1>Pick of the <em>Litter</em></h1>
+    </div>
+    <span id="sync" class="sync" data-status="local" title="">This device</span>
+  </header>
+
+  <button id="pickbar" class="pickbar" type="button" aria-live="polite"></button>
+
+  <main>
+    <section id="browse" class="view">
+      <div class="filters">
+        <input id="search" type="search" placeholder="Search by name" autocomplete="off" aria-label="Search by name">
+        <div id="chips" class="chips" role="group" aria-label="Filters"></div>
+      </div>
+      <nav id="litternav" class="litternav" aria-label="Jump to litter"></nav>
+      <p id="resultcount" class="resultcount"></p>
+      <div id="litters"></div>
+    </section>
+
+    <section id="rank" class="view" hidden>
+      <p class="rankhint">Drag <span class="grip" aria-hidden="true"></span> to reorder. Drag a tier line to move the cutoff. Tap a pup for details.</p>
+      <ol id="ranklist" class="ranklist"></ol>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="Views">
+    <button type="button" data-view="browse" aria-current="page">Browse<small id="tab-browse-count"></small></button>
+    <button type="button" data-view="rank">Rank<small id="tab-rank-count"></small></button>
+  </nav>
+
+  <dialog id="sheet" class="sheet" aria-label="Dog details"></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
