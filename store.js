@@ -5,7 +5,7 @@
 // their moves to the latest list instead of overwriting each other. Without
 // a config (or if Firebase can't be reached) the board lives in localStorage.
 
-import { normalizeOrder } from './logic.js';
+import { normalizeOrder, groups } from './logic.js';
 import { firebaseConfig } from './firebase-config.js';
 
 const LS_KEY = 'puppy-ranker:v1';
@@ -16,6 +16,13 @@ function pruned(map, keep) {
   const out = {};
   for (const [k, v] of Object.entries(map || {})) if (keep(v)) out[k] = v;
   return out;
+}
+
+/** Nothing ranked, passed, taken or noted yet. */
+function isBlank(s) {
+  const g = groups(s.order);
+  return !g.t1.length && !g.t2.length && !g.t3.length && !g.pass.length
+    && !Object.keys(s.taken).length && !Object.keys(s.notes).length;
 }
 
 export async function createStore(dogIds, onChange) {
@@ -64,14 +71,16 @@ export async function createStore(dogIds, onChange) {
       let seeded = false;
       db.onValue(boardRef, (snap) => {
         const val = snap.val();
-        if (val === null && !seeded) {
-          // First visit ever: start the shared board from whatever this
-          // device already has.
+        if (!seeded) {
           seeded = true;
-          db.set(boardRef, state).catch((err) => console.warn('Could not seed board', err));
-          return;
+          // First connection from this device: if the shared board is still
+          // untouched, start it from whatever this device already has, so a
+          // ranking made before sync was switched on is not lost.
+          if (val === null || (isBlank(clean(val)) && !isBlank(state))) {
+            db.set(boardRef, state).catch((err) => console.warn('Could not seed board', err));
+            return;
+          }
         }
-        seeded = true;
         state = clean(val);
         writeLocal(state);
         emit();
